@@ -12,7 +12,7 @@
     <title></title>
   </head>
   <body>
-    <div class="ui container">
+    <div id="root" class="ui container">
       <div class="ui grid row">
         <div class="four wide column">
         </div>
@@ -33,59 +33,108 @@
             <form class="ui form">
               <div class="field">
                 <label>Judul</label>
-                <input type="text" name=" ">
+                <input type="text" v-model="judul">
               </div>
               <div class="field">
                 <label>Harga</label>
-                <input type="text" name=" ">
+                <input type="text" v-model="harga">
               </div>
               <div class="field">
                 <label>Alamat</label>
-                <input type="text" name=" ">
+                <input type="text" v-model="alamat">
               </div>
               <div class="field">
                 <label>Gambar</label>
-                <input type="text" name=" ">
+                <input type="text" v-model="gambar">
               </div>
               <div class="field">
                 <label>Status</label>
-                <input type="text" name=" ">
+                <input type="text" v-model="status">
               </div>
               <div class="field">
                 <label>Deskripsi</label>
-                <textarea rows="2"></textarea>
+                <textarea v-model="deskripsi" rows="2"></textarea>
               </div>
               <div class="row ui grid">
                 <div class="field eight wide column">
                   <label>Latitude</label>
-                  <input type="text" name=" ">
+                  <input type="text" v-model="lat">
                 </div>
                 <div class="field eight wide column">
                   <label>Longitude</label>
-                  <input type="text" name=" ">
+                  <input type="text" v-model="long">
                 </div>
               </div>
 
-              <button class="ui blue button" type="submit">Submit</button>
+              <button v-on:click="addHouse($event)" class="ui blue button">Submit</button>
             </form>
           </div>
         </div>
       </div>
       <!-- <hr> -->
-      <div class="row ui grid raised segment">
+      <div v-for="house in houses" class="row ui grid raised segment">
         <div class="four wide column">
-          <img src="https://www.blibli.com/friends/assets/program-rumah-murah.jpg" alt="">
+          <img :src="house.gambar" alt="">
         </div>
         <div class="twelve wide column">
-          <h1>judul</h1>
-          <h2>Rp. 1.000.000.000</h2>
-          <p>Jl. Haji Nawi no.097A</p>
-          <p>Status :</p>
-          <p>Deskripsi</p>
-          <p>Lokasi</p>
+          <h1>{{house.judul}}</h1>
+          <h2>Rp. {{house.harga}}</h2>
+          <p>{{house.alamat}}</p>
+          <p>Kondisi : {{house.status}}</p>
+          <p>{{house.deskripsi}}</p>
+          <p>{{house.lokasi}}</p>
+          <p>Lat: {{house.lat}} Long: {{house.long}}</p>
         </div>
       </div>
     </div>
 
   </body>
+
+  <script src="https://unpkg.com/vue/dist/vue.js"></script>
+  <script type="text/javascript">
+    var app = new Vue({
+      el: '#root',
+      data: {
+        judul: '',
+        harga: '',
+        alamat: '',
+        status: '',
+        deskripsi: '',
+        lokasi: '',
+        gambar:'',
+        lat: '',
+        long: '',
+        houses: []
+      },
+      methods: {
+        loadTodo: function() {
+          if (localStorage.getItem('houses')!=null) {
+            this.houses = JSON.parse(localStorage.getItem('houses'))
+          }
+        },
+        updateLocal: function() {
+          localStorage.setItem("houses", JSON.stringify(app.houses));
+        },
+        addHouse: function(event) {
+          if (event) event.preventDefault()
+          this.houses.push({
+            judul:this.judul,
+            harga:this.harga,
+            alamat:this.alamat,
+            status:this.status,
+            deskripsi:this.deskripsi,
+            lokasi:this.lokasi,
+            gambar:this.gambar,
+            lat:this.lat,
+            long:this.long
+          })
+          this.updateLocal()
+        }
+      }
+    })
+    app.loadTodo();
+  </script>
+
+
+
 </html>

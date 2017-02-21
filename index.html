@@ -4,11 +4,11 @@
     <meta charset="utf-8">
     <link rel="stylesheet" type="text/css" href=https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.7/semantic.css>
     <link rel="stylesheet" type="text/css" href=https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.8/components/modal.css>
-    <link rel="stylesheet" href="css/style.css">
-    <link href='//fonts.googleapis.com/css?family=Sofia' rel='stylesheet'>
     <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.8/semantic.js"></script>
     <script scr="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.8/components/modal.js"></script>
+    <link rel="stylesheet" href="css/style.css">
+    <link href='//fonts.googleapis.com/css?family=Sofia' rel='stylesheet'>
     <title></title>
   </head>
   <body>
@@ -19,12 +19,15 @@
         <div class="two wide column">
           <img src="https://www.logopik.com/wp-content/uploads/edd/2016/06/Rent-House-Logo.png" alt="">
         </div>
-        <div class="ten wide column">
+        <div class="seven wide column">
           <h1 style="font-size: 52px;">Axioma Rent House</h1>
+        </div>
+        <div class="three wide column">
+          <button onclick="ubah()" style="margin-top:20px;"class="ui blue button">Tambah Data</button>
         </div>
       </div>
       <!-- <hr> -->
-      <div class="row ">
+      <div class="ui basic modal ">
         <div class="ui grid raised segment">
           <div class="four wide column">
             <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c9/-Insert_image_here-.svg/2000px--Insert_image_here-.svg.png" alt="">
@@ -66,7 +69,11 @@
                 </div>
               </div>
 
-              <button v-on:click="addHouse($event)" class="ui blue button">Submit</button>
+              <!-- <button v-on:click="addHouse($event)" class="ui blue button">Submit</button> -->
+              <div onclick="closeubah()" v-on:click="addHouse()" class="ui positive right labeled icon button">
+                Submit
+                <i class="checkmark icon"></i>
+              </div>
             </form>
           </div>
         </div>
@@ -85,7 +92,7 @@
           <p>{{house.lokasi}}</p>
           <p>Lat: {{house.lat}} Long: {{house.long}}</p>
           <div class="row">
-            <button v-on:click="" class="ui teal button">Edit</button>
+            <button  class="ui teal button">Edit</button>
             <button v-on:click='deleteHouse(judul)' class="ui red button">Delete</button>
           </div>
         </div>
@@ -93,14 +100,32 @@
       </div>
     </div>
 
+
+
   </body>
 
+
+
+  <script type="text/javascript">
+
+     function ubah(){
+       $('.ui.basic.modal').modal('show');
+     };
+     function closeubah(){
+       $('.ui.basic.modal').modal('hide');
+     };
+
+  </script>
+
   <script src="https://unpkg.com/vue/dist/vue.js"></script>
+
+
+
   <script type="text/javascript">
     var app = new Vue({
       el: '#root',
       data: {
-        index:'',
+        // index:'',
         judul: '',
         harga: '',
         alamat: '',
@@ -114,37 +139,62 @@
       },
       methods: {
         loadTodo: function() {
-          if (localStorage.getItem('houses')!=null) {
-            this.houses = JSON.parse(localStorage.getItem('houses'))
-          }
-        },
-        updateLocal: function() {
-          localStorage.setItem("houses", JSON.stringify(app.houses));
-        },
-        addHouse: function(event) {
-          if (event) event.preventDefault()
-          this.houses.push({
-            judul:this.judul,
-            harga:this.harga,
-            alamat:this.alamat,
-            status:this.status,
-            deskripsi:this.deskripsi,
-            lokasi:this.lokasi,
-            gambar:this.gambar,
-            lat:this.lat,
-            long:this.long
+          $.ajax({
+            type: 'GET',
+            url: 'http://localhost:3000/',
+            success: function (data) {
+              app.houses = data
+            }
           })
-          this.updateLocal()
         },
-        setIndex: function(idx) {
-          var indexHouse = this.houses.indexOf(idx)
-          this.index = indexHouse
-        },
-        deleteHouse: function(idx) {
-          this.setIndex(idx)
-          this.houses.splice(this.index, 1)
-          this.updateLocal()
+
+        addHouse: function() {
+          $.ajax({
+            type: 'POST',
+            url: 'http://localhost:3000/',
+            data : {
+              judul: app.judul,
+              harga: app.harga,
+              alamat: app.alamat,
+              status: app.status,
+              deskripsi: app.deskripsi,
+              lokasi: app.lokasi,
+              gambar:app.gambar,
+              lat: app.lat,
+              long: app.long
+            },
+            success: function (data) {
+              app.houses.push(data)
+            }
+          })
         }
+
+
+        // function(event) {
+        //   if (event) event.preventDefault()
+        //   this.houses.push({
+        //     judul:this.judul,
+        //     harga:this.harga,
+        //     alamat:this.alamat,
+        //     status:this.status,
+        //     deskripsi:this.deskripsi,
+        //     lokasi:this.lokasi,
+        //     gambar:this.gambar,
+        //     lat:this.lat,
+        //     long:this.long
+        //   })
+        //   this.updateLocal()
+        // }
+        // ,
+        // setIndex: function(idx) {
+        //   var indexHouse = this.houses.indexOf(idx)
+        //   this.index = indexHouse
+        // },
+        // deleteHouse: function(idx) {
+        //   this.setIndex(idx)
+        //   this.houses.splice(this.index, 1)
+        //   this.updateLocal()
+        // }
       }
     })
     app.loadTodo();

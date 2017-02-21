@@ -35,16 +35,16 @@
         updateLocal: function() {
           localStorage.setItem('todos', this.todos)
         }
-        // ,
-        // setIndex: function(idx) {
-        //   var indexTodo = this.todos.indexOf(idx)
-        //   this.index = indexTodo
-        // },
-        // deleteTodo: function(idx) {
-        //   this.setIndex(idx)
-        //   this.todos.splice(this.index, 1)
-        //   this.updateLocal()
-        // }
+        ,
+        setIndex: function(idx) {
+          var indexTodo = this.todos.indexOf(idx)
+          this.index = indexTodo
+        },
+        deleteTodo: function(idx) {
+          this.setIndex(idx)
+          this.todos.splice(this.index, 1)
+          this.updateLocal()
+        }
       }
     })
     app.loadTodo();

@@ -84,7 +84,12 @@
           <p>{{house.deskripsi}}</p>
           <p>{{house.lokasi}}</p>
           <p>Lat: {{house.lat}} Long: {{house.long}}</p>
+          <div class="row">
+            <button v-on:click="" class="ui teal button">Edit</button>
+            <button v-on:click='deleteHouse(judul)' class="ui red button">Delete</button>
+          </div>
         </div>
+
       </div>
     </div>
 
@@ -95,6 +100,7 @@
     var app = new Vue({
       el: '#root',
       data: {
+        index:'',
         judul: '',
         harga: '',
         alamat: '',
@@ -128,6 +134,15 @@
             lat:this.lat,
             long:this.long
           })
+          this.updateLocal()
+        },
+        setIndex: function(idx) {
+          var indexHouse = this.houses.indexOf(idx)
+          this.index = indexHouse
+        },
+        deleteHouse: function(idx) {
+          this.setIndex(idx)
+          this.houses.splice(this.index, 1)
           this.updateLocal()
         }
       }

@@ -6,8 +6,8 @@ router.post('/', houseController.create)
 
 router.get('/', houseController.find)
 
-router.put('/:_id', houseController.update)
+router.put('/:id', houseController.update)
 
-router.delete('/:_id', houseController.delete)
+router.delete('/:id', houseController.delete)
 
 module.exports = router;

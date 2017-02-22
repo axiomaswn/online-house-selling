@@ -23,12 +23,12 @@
           <h1 style="font-size: 52px;">Axioma Rent House</h1>
         </div>
         <div class="three wide column">
-          <button onclick="ubah()" style="margin-top:20px;"class="ui blue button">Tambah Data</button>
+          <button onclick="ubah()" style="margin-top:20px;" class="ui blue button">Tambah Data</button>
         </div>
       </div>
       <!-- <hr> -->
       <div class="ui basic modal ">
-        <div class="ui grid raised segment">
+        <div class="ui grid segment">
           <div class="four wide column">
             <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c9/-Insert_image_here-.svg/2000px--Insert_image_here-.svg.png" alt="">
           </div>
@@ -92,12 +92,65 @@
           <p>{{house.lokasi}}</p>
           <p>Lat: {{house.lat}} Long: {{house.long}}</p>
           <div class="row">
-            <button  class="ui teal button">Edit</button>
-            <button v-on:click='deleteHouse(judul)' class="ui red button">Delete</button>
+            <button  onclick="editmodal()" class="ui teal button">Edit</button>
+            <button v-on:click='deleteHouse(house._id)' class="ui red button">Delete</button>
           </div>
         </div>
-
       </div>
+
+
+      <div class="ui modal ">
+        <div class="ui grid segment">
+          <div class="four wide column">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c9/-Insert_image_here-.svg/2000px--Insert_image_here-.svg.png" alt="">
+          </div>
+          <div class="eight wide column">
+            <form class="ui form">
+              <div class="field">
+                <label>Judul</label>
+                <input type="text" v-model="judul">
+              </div>
+              <div class="field">
+                <label>Harga</label>
+                <input type="text" v-model="harga">
+              </div>
+              <div class="field">
+                <label>Alamat</label>
+                <input type="text" v-model="alamat">
+              </div>
+              <div class="field">
+                <label>Gambar</label>
+                <input type="text" v-model="gambar">
+              </div>
+              <div class="field">
+                <label>Status</label>
+                <input type="text" v-model="status">
+              </div>
+              <div class="field">
+                <label>Deskripsi</label>
+                <textarea v-model="deskripsi" rows="2"></textarea>
+              </div>
+              <div class="row ui grid">
+                <div class="field eight wide column">
+                  <label>Latitude</label>
+                  <input type="text" v-model="lat">
+                </div>
+                <div class="field eight wide column">
+                  <label>Longitude</label>
+                  <input type="text" v-model="long">
+                </div>
+              </div>
+
+              <!-- <button v-on:click="addHouse($event)" class="ui blue button">Submit</button> -->
+              <div onclick="" v-on:click="" class="ui positive right labeled icon button">
+                Submit
+                <i class="checkmark icon"></i>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+
     </div>
 
 
@@ -107,10 +160,14 @@
 
 
   <script type="text/javascript">
+    function editmodal(){
+      $('.ui.modal').modal('show');
+    };
 
      function ubah(){
        $('.ui.basic.modal').modal('show');
      };
+
      function closeubah(){
        $('.ui.basic.modal').modal('hide');
      };
@@ -147,7 +204,26 @@
             }
           })
         },
-
+        getData: function() {
+          $.ajax({
+            type: 'GET',
+            url: 'http://localhost:3000/',
+            data : {
+              judul: app.judul,
+              harga: app.harga,
+              alamat: app.alamat,
+              status: app.status,
+              deskripsi: app.deskripsi,
+              lokasi: app.lokasi,
+              gambar:app.gambar,
+              lat: app.lat,
+              long: app.long
+            },
+            success: function (data) {
+              app.houses.push(data)
+            }
+          })
+        },
         addHouse: function() {
           $.ajax({
             type: 'POST',
@@ -167,8 +243,47 @@
               app.houses.push(data)
             }
           })
+        },
+        deleteHouse: function (ccc) {
+          $.ajax({
+            type: 'DELETE',
+            url: 'http://localhost:3000/'+ccc,
+            success: function (data) {
+              alert('Data berhasil dihapus')
+              app.loadTodo();
+            },
+            error: function (err) {
+              console.log(err)
+            }
+          })
         }
+        ,
 
+
+        updateHouse : function (xxx) {
+          $.ajax({
+            type: 'PUT',
+            url: 'http://localhost:3000/'+xxx,
+            data: {
+              judul: app.judul,
+              harga: app.harga,
+              alamat: app.alamat,
+              status: app.status,
+              deskripsi: app.deskripsi,
+              lokasi: app.lokasi,
+              gambar:app.gambar,
+              lat: app.lat,
+              long: app.long
+            },
+            success: function (data) {
+              app.loadTodo();
+            },
+            error: function (err) {
+              alert(err)
+              console.log(err)
+            }
+          })
+        }
 
         // function(event) {
         //   if (event) event.preventDefault()
@@ -191,10 +306,14 @@
         //   this.index = indexHouse
         // },
         // deleteHouse: function(idx) {
-        //   this.setIndex(idx)
+          // this.setIndex(idx)
         //   this.houses.splice(this.index, 1)
         //   this.updateLocal()
-        // }
+        // },
+
+
+
+
       }
     })
     app.loadTodo();
